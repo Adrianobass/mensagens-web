@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <title>Mensagens Seguras</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <script>
+        async function enviarAcao(acao) {
+            let msg = document.getElementById("mensagem").value;
+            let senha = document.getElementById("senha").value;
+            let endpoint = acao === "cripto" ? "/criptografar" : "/descriptografar";
+
+            let response = await fetch(endpoint, {
+                method: "POST",
+                headers: {'Content-Type':'application/x-www-form-urlencoded'},
+                body: `mensagem=${encodeURIComponent(msg)}&senha=${encodeURIComponent(senha)}`
+            });
+            let data = await response.json();
+            document.getElementById("resultado").value = data.resultado;
+            if (acao === "cripto") document.getElementById("mensagem").value = ""; // limpa mensagem
+        }
+    </script>
+</head>
+<body>
+<div class="container">
+    <h2>📩 Mensagens Seguras</h2>
+    <textarea id="mensagem" placeholder="Digite a mensagem"></textarea>
+    <input type="password" id="senha" placeholder="Senha compartilhada">
+    <div class="buttons">
+        <button onclick="enviarAcao('cripto')">Criptografar</button>
+        <button onclick="enviarAcao('descripto')">Descriptografar</button>
+    </div>
+    <textarea id="resultado" placeholder="Resultado" readonly></textarea>
+</div>
+</body>
+</html>
